@@ -18,6 +18,96 @@
 <link href='https://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'> 
 <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'> 
 <link href="css/style.css" rel="stylesheet" media="screen">
+<style>
+.pop-layer .pop-container {
+  padding: 20px 25px;
+}
+
+.pop-layer p.ctxt {
+  color: #666;
+  font-size:40px;
+  line-height: 25px;
+}
+
+.pop-layer .btn-r {
+  width: 100%;
+  margin: 10px 0 20px;
+  padding-top: 10px;
+  border-top: 1px solid #DDD;
+  text-align: right;
+}
+
+.pop-layer {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: auto;
+  background-color: #fff;
+  border: 5px solid #3571B5;
+  z-index: 10;
+}
+
+.dim-layer {
+  display: none;
+  position: fixed;
+  _position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+}
+
+.dim-layer .dimBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: .5;
+  filter: alpha(opacity=50);
+}
+
+.dim-layer .pop-layer {
+  display: block;
+}
+
+a.btn-layerClose {
+  display: inline-block;
+  height: 25px;
+  padding: 0 14px 0;
+  border: 1px solid #304a8a;
+  background-color: #3f5a9d;
+  font-size: 20px;
+  color: #fff;
+  line-height: 25px;
+}
+
+a.btn-layerClose:hover {
+  border: 1px solid #091940;
+  background-color: #1f326a;
+  color: #fff;
+}
+a.btn-layerCopy {
+  display: inline-block;
+  height: 25px;
+  padding: 0 14px 0;
+  border: 1px solid #304a8a;
+  background-color: #3f5a9d;
+  font-size: 20px;
+  color: #fff;
+  line-height: 25px;
+}
+
+a.btn-layerCopy:hover {
+  border: 1px solid #091940;
+  background-color: #1f326a;
+  color: #fff;
+}
+</style>
 </head>
 <body class="outside-bottom-bar-page"> 
 <div id="preloader"> 
@@ -113,6 +203,60 @@
 					</div>
 				</div>
 			</div>
+			
+			<div class="container-fluid">
+			<div class="row">
+			<div class="col"></div>
+			<div class="col-10">
+				<div class="row">
+					<div class="col-2" style="padding: 0px;">
+						<p class="margin-minus">&nbsp;</p>
+						<p class="margin-minus">&nbsp;</p>
+						<p class="margin-minus">&nbsp;</p>
+						<p class="font-gv font-6v" style="letter-spacing: 0.25rem;">account</p>
+						<p class="margin-minus">&nbsp;</p>
+					</div>
+					<div class="col" style="padding: 0px;"></div>
+				</div>
+			</div>
+			<div class="col"></div>
+		</div>
+		<div class="row">
+			<div class="col"></div>
+			<div class="col-10 font-ng font-3v">
+				<p class="bold">신랑 & 신부에게 마음 전하기</p>
+				<p class="margin-minus">&nbsp;</p>
+				<p class="bold">축복의 의미로 축의금을 전달해보세요</p>
+				<p class="margin-minus">&nbsp;</p>
+			</div>
+			<div class="col"></div>
+		</div>
+		<div class="row text-left">
+			<div class="col"></div>
+			<div class="col-10">
+				<div class="row">
+					<div class="col" style="padding: 0px;">
+						<a href="#layer1" class="btn-example form-control btn btn-lg btn-primary font-ng font-4v bold" style="width:40%;">신랑 계좌번호</a>
+						<div id="layer1" class="pop-layer">
+    						<div class="pop-container">
+        						<div class="pop-conts">
+            						<!--content //-->
+            						<p class="ctxt mb20">농협<br><br>
+                						813110-56-008797
+            						</p>
+
+            						<div class="btn-r">
+            							<a href="#" class="btn-layerCopy" onclick="copy('81311056008797')">복사하기</a>
+                						<a href="#" class="btn-layerClose">Close</a>
+            						</div>
+            						<!--// content-->
+        						</div>
+    						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		</div>
 	</section> 
 
@@ -367,7 +511,53 @@
 		</div>
 	</div>
 </footer> 
+<script>
+$('.btn-example').click(function(){
+    var $href = $(this).attr('href');
+    layer_popup($href);
+});
+function layer_popup(el){
 
+    var $el = $(el);        //레이어의 id를 $el 변수에 저장
+    var isDim = $el.prev().hasClass('dimBg');   //dimmed 레이어를 감지하기 위한 boolean 변수
+
+    isDim ? $('.dim-layer').fadeIn() : $el.fadeIn();
+
+    var $elWidth = ~~($el.outerWidth()),
+        $elHeight = ~~($el.outerHeight()),
+        docWidth = $(document).width(),
+        docHeight = $(document).height();
+
+    // 화면의 중앙에 레이어를 띄운다.
+    if ($elHeight < docHeight || $elWidth < docWidth) {
+        $el.css({
+            marginTop: -$elHeight /2,
+            marginLeft: -$elWidth/2
+        })
+    } else {
+        $el.css({top: 0, left: 0});
+    }
+
+    $el.find('a.btn-layerClose').click(function(){
+        isDim ? $('.dim-layer').fadeOut() : $el.fadeOut(); // 닫기 버튼을 클릭하면 레이어가 닫힌다.
+        return false;
+    });
+
+    $('.layer .dimBg').click(function(){
+        $('.dim-layer').fadeOut();
+        return false;
+    });
+}
+function copy(val) {
+	var dummy = document.createElement("textarea");
+	document.body.appendChild(dummy);
+	dummy.value = val;
+	dummy.select();
+	document.execCommand("copy");
+	document.body.removeChild(dummy);
+	alert("복사되었습니다.");
+}
+</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
 <script src="js/pace/pace.min.js"></script> <script src="js/bootstrap/bootstrap.js"></script> 
 <script src="js/modernizr/modernizr.js"></script> <script src="js/devicejs/device.js"></script> 
